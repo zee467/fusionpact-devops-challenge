@@ -8,4 +8,30 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./backend:/app/data
+      - ./backend:/app
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-storage:/prometheus
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    ports:
+      - "9100:9100"
+    pid: "host"  # gives node-exporter access to host metrics
+    restart: always
+
+volumes:
+  grafana-storage:  {}
+  prometheus-storage:  {}

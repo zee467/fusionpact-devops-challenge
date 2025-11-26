@@ -1,0 +1,33 @@
+{
+  "family": "fusionpact-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::688567282315:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::688567282315:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "frontend",
+      "image": "688567282315.dkr.ecr.us-east-1.amazonaws.com/fusionpact-frontend:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "protocol": "tcp"
+        }
+      ]
+    },
+    {
+      "name": "backend",
+      "image": "688567282315.dkr.ecr.us-east-1.amazonaws.com/fusionpact-backend:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8000,
+          "protocol": "tcp"
+        }
+      ]
+    }
+  ]
+}

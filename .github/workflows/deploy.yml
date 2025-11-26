@@ -36,7 +36,7 @@ jobs:
         docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO_BACKEND }}:latest
 
     - name: Update backend container image in task definition
-      id: render-task
+      id: render-backend
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: ecs-task-def.json
@@ -44,17 +44,17 @@ jobs:
         image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO_BACKEND }}:latest
 
     - name: Update frontend container image in task definition
-      id: render-task-frontend
-      uses: aws-actions/amazon-ecs-render-container-image@v1
+      id: render-frontend
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition: ${{ steps.render-task.outputs.task-definition }}
+        task-definition: ${{ steps.render-backend.outputs.task-definition }}
         container-name: frontend
         image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO_FRONTEND }}:latest
 
     - name: Deploy updated task definition json to Amazon ECS
       uses: aws-actions/amazon-ecs-deploy-task-definition@v2
       with:
-        task-definition: ${{ steps.render-task-frontend.outputs.task-definition }}
+        task-definition: ${{ steps.render-frontend.outputs.task-definition }}
         service: ${{ secrets.ECS_SERVICE_NAME }}
         cluster: ${{ secrets.ECS_CLUSTER_NAME }}
         wait-for-service-stability: true

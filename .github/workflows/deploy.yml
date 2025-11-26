@@ -23,6 +23,15 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
 
+    - name: Install Python dependencies for tests
+      run: |
+        pip install -r backend/requirements.txt
+        pip install pytest
+
+    - name: Run backend tests
+      run: |
+        pytest backend/tests -q
+        
     - name: Build and push frontend image
       run: |
         docker build -t ${{ secrets.ECR_REPO_FRONTEND }} ./frontend
